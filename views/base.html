@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Academia de Certificados{% endblock %}</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy-primary: #14213D;
+            --navy-dark: #0B132B;
+            --navy-light: #243354;
+            --gold-primary: #B8923D;
+            --gold-light: #D4AF37;
+            --gold-soft: #F9F5EA;
+            --gold-border: #E8D3A2;
+            --bg-page: #F8FAFC;
+            --surface-card: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-body: #334155;
+            --text-muted: #64748B;
+            --border-soft: #E2E8F0;
+            --success-bg: #ECFDF5;
+            --success-color: #047857;
+            --success-border: #A7F3D0;
+            --warning-bg: #FFFBEB;
+            --warning-color: #B45309;
+            --warning-border: #FDE68A;
+            --danger-bg: #FEF2F2;
+            --danger-color: #B91C1C;
+            --danger-border: #FECACA;
+            --info-bg: #EFF6FF;
+            --info-color: #1D4ED8;
+            --info-border: #BFDBFE;
+            --neutral-bg: #F1F5F9;
+            --neutral-color: #475569;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(20, 33, 61, 0.08), 0 2px 4px -2px rgba(20, 33, 61, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(20, 33, 61, 0.1), 0 4px 6px -4px rgba(20, 33, 61, 0.05);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de navegación superior */
+        .navbar {
+            background-color: var(--navy-primary);
+            color: #FFFFFF;
+            border-bottom: 3px solid var(--gold-primary);
+            box-shadow: 0 4px 12px rgba(20, 33, 61, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: #FFFFFF;
+        }
+
+        .navbar-brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+            color: var(--navy-primary);
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(184, 146, 61, 0.35);
+        }
+
+        .navbar-brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .navbar-brand-text span {
+            font-size: 0.78rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: #E2E8F0;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: #FFFFFF;
+            background-color: var(--navy-light);
+        }
+
+        .nav-link.active {
+            color: #FFFFFF;
+            background-color: rgba(184, 146, 61, 0.22);
+            border: 1px solid var(--gold-primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            line-height: 1.25;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-primary), #C8A24B);
+            color: #FFFFFF;
+            box-shadow: 0 2px 6px rgba(184, 146, 61, 0.3);
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #A78233, var(--gold-primary));
+            box-shadow: 0 4px 10px rgba(184, 146, 61, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-navy {
+            background-color: var(--navy-primary);
+            color: #FFFFFF;
+        }
+
+        .btn-navy:hover {
+            background-color: var(--navy-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1.5px solid var(--navy-primary);
+            color: var(--navy-primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--navy-primary);
+            color: #FFFFFF;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.82rem;
+            border-radius: 6px;
+        }
+
+        .btn-disabled {
+            background-color: #E2E8F0;
+            color: #94A3B8;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+
+        /* Mensajes Flash */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.92rem;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-color);
+            border-color: var(--success-border);
+        }
+
+        .alert-warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-color);
+            border-color: var(--warning-border);
+        }
+
+        .alert-danger, .alert-error {
+            background-color: var(--danger-bg);
+            color: var(--danger-color);
+            border-color: var(--danger-border);
+        }
+
+        .alert-info {
+            background-color: var(--info-bg);
+            color: var(--info-color);
+            border-color: var(--info-border);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #FFFFFF;
+            border-top: 1px solid var(--border-soft);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .footer p {
+            margin: 0.2rem 0;
+        }
+
+        .footer strong {
+            color: var(--navy-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .navbar-nav {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .main-container {
+                padding: 1.25rem 1rem;
+            }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <div class="navbar-brand-icon">
+                    <!-- Icono Birrete / Academia SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3ZM5 13.18V17.18C5 19.94 8.13 22 12 22C15.87 22 19 19.94 19 17.18V13.18L12 17.09L5 13.18Z"/>
+                    </svg>
+                </div>
+                <div class="navbar-brand-text">
+                    <h1>Academia de Certificados</h1>
+                    <span>Sistema de Control y Emisión</span>
+                </div>
+            </a>
+
+            <nav>
+                <ul class="navbar-nav">
+                    <li>
+                        <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Tablero
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/cargar" class="nav-link {% if request.path == '/cargar' %}active{% endif %}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            Cargar Datos
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-container">
+        <!-- Notificaciones Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 1px;">
+                                {% if category in ['danger', 'error'] %}
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                {% elif category == 'warning' %}
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                {% else %}
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                {% endif %}
+                            </svg>
+                            <div>{{ message }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Pie de página institucional -->
+    <footer class="footer">
+        <p><strong>Academia de Certificados</strong> &bull; Sistema Automatizado de Reglas Académicas y Emisión de Constancias</p>
+        <p>Cumplimiento de estándares de evaluación y control de inconsistencias.</p>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

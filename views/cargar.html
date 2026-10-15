@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Carga de Archivos &bull; Academia de Certificados{% endblock %}
+
+{% block extra_head %}
+<style>
+    .upload-card-wrapper {
+        max-width: 760px;
+        margin: 1rem auto;
+    }
+
+    .upload-card {
+        background-color: var(--surface-card);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-soft);
+        padding: 2.25rem 2.5rem;
+    }
+
+    .upload-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .upload-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--navy-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .upload-header p {
+        font-size: 0.92rem;
+        color: var(--text-muted);
+        margin-top: 0.4rem;
+    }
+
+    .instruction-box {
+        background-color: var(--gold-soft);
+        border: 1px solid var(--gold-border);
+        border-left: 4px solid var(--gold-primary);
+        padding: 1rem 1.25rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 2rem;
+        font-size: 0.88rem;
+        color: #715518;
+    }
+
+    .instruction-box ul {
+        margin-top: 0.5rem;
+        padding-left: 1.25rem;
+    }
+
+    .instruction-box li {
+        margin-bottom: 0.35rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--navy-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .file-dropzone {
+        border: 2px dashed #CBD5E1;
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        text-align: center;
+        background-color: #F8FAFC;
+        transition: all 0.2s ease;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .file-dropzone:hover {
+        border-color: var(--gold-primary);
+        background-color: #FBF9F2;
+    }
+
+    .file-dropzone input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .dropzone-icon {
+        color: var(--gold-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .dropzone-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--navy-primary);
+    }
+
+    .dropzone-hint {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .file-selected-name {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gold-primary);
+        margin-top: 0.5rem;
+        word-break: break-all;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-soft);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-card-wrapper">
+    <div class="upload-card">
+        <div class="upload-header">
+            <h2>Carga de Archivos de Evaluación</h2>
+            <p>Sube los archivos oficiales de Excel para procesar estudiantes, notas y constancias</p>
+        </div>
+
+        <div class="instruction-box">
+            <strong>Requerimientos de archivos:</strong>
+            <ul>
+                <li><strong>Maestro de Estudiantes:</strong> Archivo Excel con hoja <em>Estudiantes</em> (Identificacion, Nombre_Completo, Correo, Programa, Cohorte).</li>
+                <li><strong>Registro de Evaluaciones:</strong> Archivo Excel con hoja <em>Evaluaciones</em> (Identificacion, Programa, Modulo, Nota, Asistencia_Pct, Fecha_Cierre).</li>
+            </ul>
+        </div>
+
+        <form action="/cargar" method="POST" enctype="multipart/form-data">
+            <!-- Archivo 1: Maestro de Estudiantes -->
+            <div class="form-group">
+                <label class="form-label" for="maestro">
+                    1. Archivo Maestro de Estudiantes (.xlsx)
+                </label>
+                <div class="file-dropzone" id="dropzone-maestro">
+                    <input type="file" name="maestro" id="maestro" accept=".xlsx, .xls" required onchange="updateFileName(this, 'name-maestro')">
+                    <div class="dropzone-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="dropzone-text">Selecciona o arrastra el archivo de Maestro de Estudiantes</div>
+                    <div class="dropzone-hint">Formato Excel (.xlsx, .xls) &bull; ej. Maestro_Estudiantes.xlsx</div>
+                    <div id="name-maestro" class="file-selected-name"></div>
+                </div>
+            </div>
+
+            <!-- Archivo 2: Registro de Evaluaciones -->
+            <div class="form-group">
+                <label class="form-label" for="evaluaciones">
+                    2. Registro de Evaluaciones (.xlsx)
+                </label>
+                <div class="file-dropzone" id="dropzone-evaluaciones">
+                    <input type="file" name="evaluaciones" id="evaluaciones" accept=".xlsx, .xls" required onchange="updateFileName(this, 'name-evaluaciones')">
+                    <div class="dropzone-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="dropzone-text">Selecciona o arrastra el archivo de Registro de Evaluaciones</div>
+                    <div class="dropzone-hint">Formato Excel (.xlsx, .xls) &bull; ej. Registro_Evaluaciones.xlsx</div>
+                    <div id="name-evaluaciones" class="file-selected-name"></div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/" class="btn btn-outline">Cancelar</a>
+                <button type="submit" class="btn btn-gold">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 16 12 12 8 16"></polyline>
+                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                        <polyline points="16 16 12 12 8 16"></polyline>
+                    </svg>
+                    Procesar y Guardar Datos
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function updateFileName(input, targetId) {
+        const display = document.getElementById(targetId);
+        if (input.files && input.files[0]) {
+            display.innerText = "✓ Archivo seleccionado: " + input.files[0].name;
+        } else {
+            display.innerText = "";
+        }
+    }
+</script>
+{% endblock %}

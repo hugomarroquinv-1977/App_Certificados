@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Sin certificado — {{ sid }}{% endblock %}
+{% block contenido %}
+<article class="certificado">
+  <h2>Sin certificado o sin datos</h2>
+  <p>No hay certificado emitible para la identificación {{ sid }}.</p>
+  <a href="{{ url_for('index') }}">Volver a resultados</a>
+</article>
+{% endblock %}

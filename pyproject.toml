@@ -1,0 +1,14 @@
+[project]
+name = "app-certificados"
+version = "0.1.0"
+description = "App de Certificados de la Academia"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0.0",
+    "pandas>=2.2.0",
+    "openpyxl>=3.1.2",
+    "fpdf2>=2.7.0",
+    "psycopg[binary]>=3.1.18",
+    "python-dotenv>=1.0.0",
+]

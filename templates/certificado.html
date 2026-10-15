@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Certificado — {{ r.nombre }}{% endblock %}
+{% block contenido %}
+<article class="certificado">
+  <h2>{{ r.tipo }} — {{ r.programa }}</h2>
+  <p class="nombre">{{ r.nombre }}</p>
+  <p>Identificación: {{ r.id }} · Módulos: {{ r.modulos }}</p>
+  <p>Promedio: {{ "%.2f"|format(r.promedio) }} · Asistencia: {{ "%.2f"|format(r.asistencia) }}%</p>
+  <a href="{{ url_for('index') }}">Volver a resultados</a>
+</article>
+{% endblock %}

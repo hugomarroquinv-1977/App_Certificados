@@ -1,0 +1,17 @@
+/* Academia Horizonte: azul marino y dorado. */
+body { font-family: Arial, sans-serif; margin: 0; background: #f4f1e6; color: #1c1c1c; }
+.encabezado { background: #0a2a5a; color: #e8c15a; padding: 20px; text-align: center; }
+.encabezado p { color: #ffffff; margin: 4px 0 0; }
+main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+.contadores { display: flex; gap: 12px; margin: 12px 0; }
+.tarjeta { flex: 1; border-radius: 8px; padding: 12px; text-align: center; color: #fff; }
+.tarjeta .numero { display: block; font-size: 28px; font-weight: bold; }
+.verde { background: #1e7e34; } .azul { background: #0a2a5a; } .roja { background: #b02a2a; }
+.filtro { margin: 12px 0; }
+table.resultados { width: 100%; border-collapse: collapse; background: #fff; }
+table.resultados th { background: #0a2a5a; color: #e8c15a; padding: 8px; }
+table.resultados td { border: 1px solid #ddd; padding: 6px 8px; }
+.fila-verde { background: #e2f2e5; } .fila-azul { background: #e0e9f7; } .fila-roja { background: #f9dede; }
+.inconsistencias { margin-top: 20px; background: #fff; border: 2px solid #e8c15a; border-radius: 8px; padding: 12px; }
+.certificado { background: #fff; border: 3px solid #e8c15a; outline: 3px solid #0a2a5a; border-radius: 8px; padding: 24px; text-align: center; }
+.certificado .nombre { font-size: 26px; color: #0a2a5a; font-weight: bold; }

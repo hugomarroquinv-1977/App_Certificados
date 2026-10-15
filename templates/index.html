@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titulo %}Resultados — Academia Horizonte{% endblock %}
+{% block contenido %}
+<section class="contadores">
+  <div class="tarjeta verde"><span class="numero">{{ contadores["Aprobación"] }}</span><span>Aprobación</span></div>
+  <div class="tarjeta azul"><span class="numero">{{ contadores["Participación"] }}</span><span>Participación</span></div>
+  <div class="tarjeta roja"><span class="numero">{{ contadores["Sin certificado"] }}</span><span>Sin certificado</span></div>
+</section>
+
+<form method="get" class="filtro">
+  <label for="programa">Filtrar por programa:</label>
+  <select name="programa" id="programa" onchange="this.form.submit()">
+    <option value="Todos" {% if elegido == "Todos" %}selected{% endif %}>Todos</option>
+    {% for p in programas %}
+    <option value="{{ p }}" {% if elegido == p %}selected{% endif %}>{{ p }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<table class="resultados">
+  <thead>
+    <tr><th>Nombre</th><th>Programa</th><th>Módulos</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th></tr>
+  </thead>
+  <tbody>
+    {% for r in tabla %}
+    <tr class="{% if r.tipo == 'Aprobación' %}fila-verde{% elif r.tipo == 'Participación' %}fila-azul{% else %}fila-roja{% endif %}">
+      <td><a href="{{ url_for('certificado', sid=r.id) }}">{{ r.nombre }}</a></td>
+      <td>{{ r.programa }}</td>
+      <td>{{ r.modulos }}</td>
+      <td>{{ "%.2f"|format(r.promedio) }}</td>
+      <td>{{ "%.2f"|format(r.asistencia) }}</td>
+      <td>{{ r.tipo }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<section class="inconsistencias">
+  <h2>Inconsistencias (3 detectadas)</h2>
+  <h3>1. Maestro sin evaluaciones ({{ inconsistencias.sin_evaluacion|length }})</h3>
+  <ul>
+    {% for m in inconsistencias.sin_evaluacion %}
+    <li>{{ m.nombre }} — {{ m.id }} — {{ m.programa }}: está en la lista oficial pero no tiene notas.</li>
+    {% endfor %}
+  </ul>
+  <h3>2. Evaluaciones sin maestro ({{ inconsistencias.huerfanos|length }})</h3>
+  <ul>
+    {% for h in inconsistencias.huerfanos %}
+    <li>{{ h.id }} — {{ h.programa }}: tiene {{ h.filas }} evaluaciones (promedio {{ "%.2f"|format(h.promedio) }}) pero no existe en el maestro. No se emite certificado.</li>
+    {% endfor %}
+  </ul>
+  <h3>3. Casos con nota 0 para revisión ({{ inconsistencias.con_ceros|length }})</h3>
+  <ul>
+    {% for c in inconsistencias.con_ceros %}
+    <li>{{ c.nombre }} — {{ c.id }} — {{ c.programa }}: tiene al menos una nota en 0 (posible abandono, revisar si es nota real o materia no cursada).</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
