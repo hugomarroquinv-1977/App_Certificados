@@ -1,11 +1,39 @@
 {% extends "base.html" %}
-{% block titulo %}Certificado — {{ r.nombre }}{% endblock %}
+{% block titulo %}Certificado — Academia Horizonte{% endblock %}
 {% block contenido %}
-<article class="certificado">
-  <h2>{{ r.tipo }} — {{ r.programa }}</h2>
-  <p class="nombre">{{ r.nombre }}</p>
-  <p>Identificación: {{ r.id }} · Módulos: {{ r.modulos }}</p>
-  <p>Promedio: {{ "%.2f"|format(r.promedio) }} · Asistencia: {{ "%.2f"|format(r.asistencia) }}%</p>
-  <a href="{{ url_for('index') }}">Volver a resultados</a>
+<div class="acciones-certificado">
+  <button type="button" class="boton-dorado" onclick="window.print()">Imprimir / Guardar PDF</button>
+  <a href="{{ url_for('index') }}" class="volver">Volver a resultados</a>
+</div>
+
+{% for r in certificados %}
+<article class="diploma">
+  <div class="diploma-marco">
+    <div class="sello">AH</div>
+    <p class="institucion">Academia Horizonte</p>
+    <p class="lema">Formación técnica para empresas</p>
+    <h2 class="tipo">
+      {% if r.tipo == "Aprobación" %}Certificado de Aprobación{% else %}Certificado de Participación{% endif %}
+    </h2>
+    <p class="otorgado">Se otorga el presente certificado a</p>
+    <p class="nombre">{{ r.nombre }}</p>
+    <p class="detalle">Identificación {{ r.id }}</p>
+    <p class="texto">
+      por haber {% if r.tipo == "Aprobación" %}completado y aprobado{% else %}participado en{% endif %}
+      el programa <strong>{{ r.programa }}</strong>, cohorte <strong>{{ r.cohorte }}</strong>,
+      con {{ r.modulos }} módulos cursados.
+    </p>
+    <div class="datos">
+      <div><span class="etiqueta">Promedio</span><span class="valor">{{ "%.2f"|format(r.promedio) }}</span></div>
+      <div><span class="etiqueta">Asistencia</span><span class="valor">{{ "%.2f"|format(r.asistencia) }}%</span></div>
+      <div><span class="etiqueta">Módulos</span><span class="valor">{{ r.modulos }}</span></div>
+    </div>
+    <p class="fecha">Emitido el {{ hoy }}</p>
+    <div class="firmas">
+      <div class="firma"><span class="linea"></span>Dirección Académica</div>
+      <div class="firma"><span class="linea"></span>Academia Horizonte</div>
+    </div>
+  </div>
 </article>
+{% endfor %}
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Sin permiso — Academia Horizonte{% endblock %}
+{% block contenido %}
+<!-- Página amable para cuando alguien entra a una sección que no le corresponde. -->
+<section class="login-envoltura">
+  <div class="caja-login">
+    <h2>Sección solo para administradores</h2>
+    <p class="login-ayuda">
+      Esta parte de la aplicación está reservada al rol de administrador.
+      Tu sesión no tiene permiso para verla.
+    </p>
+
+    <div class="info-sesion">
+      <p><strong>Correo:</strong> {{ session.get("correo") }}</p>
+      <p><strong>Rol:</strong> {{ session.get("rol") }}</p>
+    </div>
+
+    <p class="login-ayuda">
+      Si necesitas acceso, pide a la dirección académica que te asigne el rol correspondiente.
+    </p>
+
+    <div class="acciones">
+      <a href="{{ url_for('index') }}" class="boton-dorado">Volver al tablero</a>
+      <a href="{{ url_for('salir') }}" class="boton-salir boton-salir-oscuro">Salir</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

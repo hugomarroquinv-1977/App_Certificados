@@ -3,3 +3,9 @@
 __pycache__/
 *.pyc
 .vercel
+.pytest_cache/
+
+# Archivos locales que no deben subirse
+academia.db
+Certificados/
+.agents/

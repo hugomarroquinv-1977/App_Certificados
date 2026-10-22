@@ -7,8 +7,17 @@
 </head>
 <body>
   <header class="encabezado">
-    <h1>Academia Horizonte</h1>
-    <p>Certificados por cohorte</p>
+    <div class="encabezado-texto">
+      <h1>Academia Horizonte</h1>
+      <p>Certificados por cohorte</p>
+    </div>
+    {% if session.get("correo") %}
+    <div class="usuario-sesion">
+      <span class="usuario-correo">{{ session.get("correo") }}</span>
+      <span class="usuario-rol rol-{{ session.get('rol') }}">{{ session.get("rol") }}</span>
+      <a href="{{ url_for('salir') }}" class="boton-salir">Salir</a>
+    </div>
+    {% endif %}
   </header>
   <main>
     {% block contenido %}{% endblock %}

@@ -1,11 +1,55 @@
 {% extends "base.html" %}
 {% block titulo %}Resultados — Academia Horizonte{% endblock %}
 {% block contenido %}
+{# VARIABLE de plantilla: True solo cuando la sesión trae el rol de administrador. #}
+{% set es_admin = session.get("rol") == "admin" %}
 <section class="contadores">
   <div class="tarjeta verde"><span class="numero">{{ contadores["Aprobación"] }}</span><span>Aprobación</span></div>
   <div class="tarjeta azul"><span class="numero">{{ contadores["Participación"] }}</span><span>Participación</span></div>
   <div class="tarjeta roja"><span class="numero">{{ contadores["Sin certificado"] }}</span><span>Sin certificado</span></div>
 </section>
+
+{% if error %}
+<!-- Aviso rojo: algo salió mal con la carga o la descarga. -->
+<p class="aviso-error">{{ error }}</p>
+{% endif %}
+
+{% if session.get("rol") == "admin" %}
+<!-- Panel de administrador: subir los dos Excel y recalcular sin tocar Insumos/. -->
+<section class="panel-admin">
+  <h2>Panel de administrador</h2>
+  <p class="ayuda">Sube los dos Excel para recalcular los certificados sin modificar la carpeta Insumos/.</p>
+
+  {% if datos_subidos %}
+  <!-- Aviso verde: los resultados subidos no se guardan en ningún lado. -->
+  <p class="aviso-verde">
+    Estos resultados se calcularon con los archivos que acabas de subir y viven solo en esta pantalla.
+    Al recargar la aplicación vuelve a los datos de fábrica, porque todavía no hay dónde guardarlos.
+  </p>
+  {% endif %}
+
+  <p class="origen-datos"><strong>Origen de los datos en pantalla:</strong> {{ origen }}</p>
+
+  <form method="post" action="{{ url_for('cargar') }}" enctype="multipart/form-data" class="formulario-carga">
+    <div class="campo-archivo">
+      <label for="maestro">Maestro de estudiantes (.xlsx)</label>
+      <input type="file" id="maestro" name="maestro" accept=".xlsx" required>
+    </div>
+    <div class="campo-archivo">
+      <label for="evaluaciones">Registro de evaluaciones (.xlsx)</label>
+      <input type="file" id="evaluaciones" name="evaluaciones" accept=".xlsx" required>
+    </div>
+    <div class="acciones">
+      <button type="submit" name="accion" value="ver" class="boton-dorado">Procesar y ver en pantalla</button>
+      <button type="submit" name="accion" value="excel" class="boton-dorado">Procesar y descargar Excel</button>
+    </div>
+  </form>
+
+  <p class="ayuda">
+    <a href="{{ url_for('descargar') }}">Descargar los resultados de los datos de fábrica (.xlsx)</a>
+  </p>
+</section>
+{% endif %}
 
 <form method="get" class="filtro">
   <label for="programa">Filtrar por programa:</label>
@@ -17,24 +61,47 @@
   </select>
 </form>
 
-<table class="resultados">
-  <thead>
-    <tr><th>Nombre</th><th>Programa</th><th>Módulos</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th></tr>
-  </thead>
-  <tbody>
-    {% for r in tabla %}
-    <tr class="{% if r.tipo == 'Aprobación' %}fila-verde{% elif r.tipo == 'Participación' %}fila-azul{% else %}fila-roja{% endif %}">
-      <td><a href="{{ url_for('certificado', sid=r.id) }}">{{ r.nombre }}</a></td>
-      <td>{{ r.programa }}</td>
-      <td>{{ r.modulos }}</td>
-      <td>{{ "%.2f"|format(r.promedio) }}</td>
-      <td>{{ "%.2f"|format(r.asistencia) }}</td>
-      <td>{{ r.tipo }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<form method="post" action="{{ url_for('generar') }}" class="seleccion">
+  <table class="resultados">
+    <thead>
+      <tr>
+        {% if es_admin %}
+        <th class="col-check"><input type="checkbox" id="marcar-todos" title="Marcar todos los que sí pueden certificarse"></th>
+        {% endif %}
+        <th>Nombre</th><th>Programa</th><th>Módulos</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in tabla %}
+      <tr class="{% if r.tipo == 'Aprobación' %}fila-verde{% elif r.tipo == 'Participación' %}fila-azul{% else %}fila-roja{% endif %}">
+        {% if es_admin %}
+        <td class="col-check">
+          {% if r.tipo != "Sin certificado" %}
+          <input type="checkbox" name="seleccion" value="{{ r.id }}|{{ r.programa }}" class="casilla">
+          {% else %}
+          <span title="Sin certificado: no se puede emitir">—</span>
+          {% endif %}
+        </td>
+        {% endif %}
+        <td><a href="{{ url_for('certificado', sid=r.id) }}">{{ r.nombre }}</a></td>
+        <td>{{ r.programa }}</td>
+        <td>{{ r.modulos }}</td>
+        <td>{{ "%.2f"|format(r.promedio) }}</td>
+        <td>{{ "%.2f"|format(r.asistencia) }}</td>
+        <td>{{ r.tipo }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if es_admin %}
+  <div class="acciones">
+    <button type="submit" class="boton-dorado">Generar certificado</button>
+    <span class="ayuda">Marca una o varias casillas y luego pulsa el botón.</span>
+  </div>
+  {% endif %}
+</form>
 
+{% if es_admin %}
 <section class="inconsistencias">
   <h2>Inconsistencias (3 detectadas)</h2>
   <h3>1. Maestro sin evaluaciones ({{ inconsistencias.sin_evaluacion|length }})</h3>
@@ -56,4 +123,14 @@
     {% endfor %}
   </ul>
 </section>
+{% endif %}
+
+{% if es_admin %}
+<script>
+  // Solo presentación: marca o desmarca todas las casillas visibles.
+  document.getElementById("marcar-todos").addEventListener("change", function (e) {
+    document.querySelectorAll(".casilla").forEach(function (c) { c.checked = e.target.checked; });
+  });
+</script>
+{% endif %}
 {% endblock %}
